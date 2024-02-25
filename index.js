@@ -1,105 +1,127 @@
-const express = require('express')
-const Sequelize = require('sequelize')
-const app = express()
+const express = require("express");
+const app = express();
+const Sequelize = require('sequelize');
 
+//set project
+app.use(express.urlencoded({extended:false}));
+app.use(express.json());
 
-app.use(express.json())
-
-//const dbUrl = "postgres://webadmin:YLTkax31635@node56376-noderest-test1.proen.app.ruk-com.cloud/Books"
-//const dbUrl = "postgres://webadmin:YLTkax31635@node56376-noderest-test1.proen.app.ruk-com.cloud:11873/Books"
-const dbUrl = "http://localhost:3000"
-
-//const sequelize = new Sequelize(dbUrl);
+//set database
 const sequelize = new Sequelize('database', 'username', 'password', {
-    host : 'localhost',
-    dialect : 'sqlite',
-    storage : './Database/SQBooks.sqlite'
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: './database/carrentalsystem.sqlite'
 });
-
-const Book = sequelize.define("book",{
-    id :{
+const user = sequelize.define("user",{
+    userid:{
         type: Sequelize.INTEGER,
-        autoIncrement:true,
+        autoIncrement: true,
         primaryKey: true
     },
-    title :{
-        type: Sequelize.STRING,
-        allowNull: false // have to
+    username:{
+        type: Sequelize.STRING
     },
-    author :{
-        type: Sequelize.STRING,
-        allowNull: false // have to        
-    },  
-})
+    drivinglicense:{
+        type: Sequelize.STRING
+    },
+    address:{
+        type: Sequelize.STRING
+    },
+    email:{
+        type: Sequelize.STRING
+    },
+    phone:{
+        type: Sequelize.STRING
+    },
+    password:{
+        type: Sequelize.STRING
+    }
+});
+const payment = sequelize.define("payment",{
+    paymentid:{
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    carholdername:{
+        type: Sequelize.STRING
+    },
+    cardnumber: Sequelize.STRING
+});
+const rental = sequelize.define("rental",{
+    rentalid:{
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    userid:{
+        type: Sequelize.INTEGER
+    },
+    carid:{
+        type: Sequelize.INTEGER
+    },
+    paymentid:{
+        type: Sequelize.INTEGER
+    },
+    checkindate:{
+        type: Sequelize.STRING
+    },
+    checkoutdate:{
+        type: Sequelize.STRING
+    },
+    rentaltotal:{
+        type: Sequelize.INTEGER
+    }
+});
+const car = sequelize.define("car",{
+    carid:{
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    licenseplate:{
+        type: Sequelize.STRING
+    },
+    year:{
+        type: Sequelize.STRING
+    },
+    capacity:{
+        type: Sequelize.INTEGER
+    },
+    priceperday:{
+        type: Sequelize.INTEGER
+    },
+    insurance_charge:{
+        type: Sequelize.INTEGER
+    },
+    brand:{
+        type: Sequelize.STRING
+    },
+    color:{
+        type: Sequelize.STRING
+    }
+});
+sequelize.sync();
 
-sequelize.sync()
-
-app.get('/books',(req,res)=>{
-    Book.findAll().then(books =>{
-        res.json(books)
-    }).catch(err=>{
-        res.status(500).send(err)
-    })
-})
-
-
-app.get('/books/:id',(req,res)=>{
-    Book.findByPk(req.params.id).then(book =>{
-        if(!book) {
-            res.status(404).send('Book not found')
-        }else{
-            res.json(book)
+app.get("/getuser",(req,res) => {
+    user.findAll().then(data => {
+        if (data) {
+            res.json(data);
         }
-    }).catch(err=>{
-        res.status(500).send(err)
+    }).catch(err => {
+        res.status(500).send(err);
     })
-})
+});
 
+app.post("/createuser",(req,res) => {
+    user.create(req.body).then(() => {
+        res.json({});
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+});
 
-
-app.post('/books',(req,res)=>{
-    Book.create(req.body).then(book =>{
-        res.send(book)
-       
-    }).catch(err=>{
-        res.status(500).send(err)
-    })
-})
-
-
-app.put('/books/:id',(req,res)=>{
-    Book.findByPk(req.params.id).then(book =>{
-        if(!book){
-            res.status.send('Bookn not found')
-        }else{
-            book.update(req.body).then(()=>{
-                res.send(book)
-            }).catch(err=>{
-                res.status(500).send(err)
-            })
-        }
-    }).catch(err=>{
-        res.status(500).send(err)
-    })
-})
-
-
-app.delete('/books/:id',(req,res)=>{
-    Book.findByPk(req.params.id).then(book =>{
-        if(!book){
-            res.status.send('Bookn not found')
-        }else{
-            book.destroy().then(()=>{
-                res.send({})
-            }).catch(err=>{
-                res.status(500).send(err)
-            })
-        }
-    }).catch(err=>{
-        res.status(500).send(err)
-    })
-})
-
-
-const port = process.env.PORT || 3000
-app.listen(port,()=> console.log(`Listening on port ${port}`))
+//connect server
+app.listen(3000,() => {
+    console.log("connect server");
+});

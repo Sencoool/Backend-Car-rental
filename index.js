@@ -99,6 +99,9 @@ const car = sequelize.define("car",{
     },
     color:{
         type: Sequelize.STRING
+    },
+    Image:{
+        type: Sequelize.STRING
     }
 });
 sequelize.sync();
@@ -115,6 +118,14 @@ app.get("/getuser",(req,res) => {
 
 app.post("/createuser",(req,res) => {
     user.create(req.body).then(() => {
+        res.json({});
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+});
+
+app.post("/createcar",(req,res) => {
+    car.create(req.body).then(() => {
         res.json({});
     }).catch(err => {
         res.status(500).send(err);

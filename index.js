@@ -132,6 +132,17 @@ app.post("/createcar",(req,res) => {
     });
 });
 
+app.get("/showcar", (req, res) => {
+    car.findAll().then(data => {
+        if (data) {
+            res.json(data)
+        }
+    }).catch(err => {
+        res.status(500).send(err);
+    })
+});
+
+
 //connect server
 app.listen(3000,() => {
     console.log("connect server");

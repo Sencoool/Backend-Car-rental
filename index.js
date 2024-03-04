@@ -142,6 +142,35 @@ app.get("/showcar", (req, res) => {
     })
 });
 
+app.get("/payment", (req, res) => {
+    payment.findAll().then(data => {
+        if (data) {
+            res.json(data);
+        }
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+});
+
+app.get("/rental", (req, res) => {
+    rental.findAll().then(data => {
+        if (data) {
+            res.json(data);
+        }
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+});
+
+app.get("/receipt", (req, res) => {
+    rental.findAll().then(data => {
+        if (data) {
+            res.json(data);
+        }
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+});
 
 //connect server
 app.listen(3000,() => {

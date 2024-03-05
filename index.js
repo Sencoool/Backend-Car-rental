@@ -1,3 +1,4 @@
+// index.js
 const express = require("express");
 const app = express();
 const Sequelize = require('sequelize');
@@ -123,6 +124,22 @@ app.post("/createuser",(req,res) => {
         res.status(500).send(err);
     });
 });
+
+app.post("/login", async (req,res) => {
+    try {
+        const {username, password}= req.body
+        const checkuser = await user.findOne({where:{username}})
+        console.log(checkuser,"Hello");
+        if (!checkuser){
+            console.log("On user Name");
+            return res.json({massage: "ON"})
+        }
+        return res.json({massage: true,checkuser})
+    } catch (error) {
+        res.status(500).send("Error in login")
+    }
+});
+
 
 app.post("/createcar",(req,res) => {
     car.create(req.body).then(() => {
